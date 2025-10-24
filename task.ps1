@@ -2,24 +2,16 @@
 $ResourceGroupName = "mate-azure-task-18"
 $Location = "East US"
 $VNetName = "web-vnet"
-$WebSubnetName = "web"
+$WebSubnetName = "webservers"  # ЗМІНЕНО: "web" → "webservers"
 $JumpboxSubnetName = "jumpbox"
 $SshKeyName = "webserver-ssh-key"
-
-# Видалити існуючу ресурсну групу, якщо вона є
-$existingRG = Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
-if ($existingRG) {
-    Write-Host "Removing existing resource group to avoid duplicate networks..."
-    Remove-AzResourceGroup -Name $ResourceGroupName -Force
-    Start-Sleep -Seconds 60  # Чекати повного видалення
-}
 
 # Create Resource Group
 Write-Host "Creating Resource Group..."
 $resourceGroup = New-AzResourceGroup -Name $ResourceGroupName -Location $Location
 Write-Host "Created Resource Group: $ResourceGroupName"
 
-# Create Virtual Network and Subnets (ТІЛЬКИ ОДНА МЕРЕЖА)
+# Create Virtual Network and Subnets
 Write-Host "Creating Virtual Network..."
 $webSubnet = New-AzVirtualNetworkSubnetConfig -Name $WebSubnetName -AddressPrefix "10.20.30.0/24"
 $jumpboxSubnet = New-AzVirtualNetworkSubnetConfig -Name $JumpboxSubnetName -AddressPrefix "10.20.31.0/24"
@@ -207,3 +199,6 @@ for ($i = 1; $i -le 2; $i++) {
 }
 
 Write-Host "Deployment completed successfully!"
+Write-Host "Load Balancer Frontend IP: 10.20.30.62"
+Write-Host "DNS record: todo.or.nottodo -> 10.20.30.62"
+Write-Host "Load Balancer deployed in subnet: webservers"
